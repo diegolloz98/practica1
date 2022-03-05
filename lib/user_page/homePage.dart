@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var flags = ["ad", "mx", "pe", "ca", "ar"];
   var country = ["Andorra", "Mexico", "Peru", "Canada", "Argentina"];
+  var numberOfElements = 5;
 
   
   @override
@@ -46,7 +47,7 @@ class _HomePageState extends State<HomePage> {
             child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: 5,
+                itemCount: numberOfElements,
                 itemBuilder: (BuildContext context, int index) {
                 return Column(
                   mainAxisSize: MainAxisSize.max,
