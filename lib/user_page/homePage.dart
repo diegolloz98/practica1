@@ -1,4 +1,6 @@
 
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -17,41 +19,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var flags = ["ad", "mx", "pe", "ca", "ar"];
+  var country = ["Andorra", "Mexico", "Peru", "Canada", "Argentina"];
+
+  
   @override
   Widget build(BuildContext context) {
     //final urlImage = 'https://i.redd.it/d3j78k2wgjj11.png';
-    Widget button(String s, String n){
-      return RaisedButton(
-          onPressed: () => {
-            print(n)
-          },
-          // padding: const EdgeInsets.all(0.0),
-          child: Container(
-            
-            padding: const EdgeInsets.only(top: 20.0, bottom: 20 ),
-            child:Row(
-              children: [
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.network(
-                      s,
-                    )
-                ),
-                Container(
-                    margin: const EdgeInsets.only( left: 10.0 ),
-                    child: Text(
-                      n,
-                      style: TextStyle( fontSize: 20.0),
-                    )
-                )
-              ],
-            ),
-          ),
-          shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(5.0)
-          )
-        );
-    }
+    
     final urlImage = 'https://picsum.photos/200/300';
 
 
@@ -69,27 +44,54 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         backLayer: Container(
-          
           margin: EdgeInsets.all(20) ,
           child: Container(
-            
-            child: Column(
-                
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  button('https://flagcdn.com/16x12/ad.png', "Andorra"),
-                  SizedBox(height: 15),
-                  button('https://flagcdn.com/16x12/mx.png', "Mexico"),
-                  SizedBox(height: 15),
-                  button('https://flagcdn.com/16x12/pe.png', "Peru"),
-                  SizedBox(height: 15),
-                  button('https://flagcdn.com/16x12/ca.png', "Canada"),
-                  SizedBox(height: 15),
-                  button('https://flagcdn.com/16x12/ar.png', "Argentina"),
-                ]
+            child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: 5,
+                itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    SizedBox(height: 15),
+                    RaisedButton(
+                    onPressed: () => {
+                      BlocProvider.of<TimeBloc>(context).index = index,
+                      BlocProvider.of<TimeBloc>(context).add(TimePullToRefreshEvent()),
+                    },
+                    // padding: const EdgeInsets.all(0.0),
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 20 ),
+                      child:Row(
+                        children: [
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Image.network(
+                                'https://flagcdn.com/32x24/${flags[index]}.png',
+                              )
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only( left: 10.0 ),
+                              child: Text(
+                                "${country[index]}",
+                                style: TextStyle( fontSize: 20.0),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(5.0)
+                    ),
+                  ),
+                  ]
+                );
+              }
+            )
+              
             ),
           ),
-      ),
           frontLayer: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -106,28 +108,29 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(height: 15),
-              BlocBuilder<TimeBloc, TimeState>(
-                  builder: (context, state){
-                    print(state);
-                    if(state is TimeLoadedState){
-                      return Padding(
-                                        padding: const EdgeInsets.all(17.0),
-                                        child: Text(
-                                          state.time,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 45.0,
-                                          ),
-                                        ),
-                                      );
-                      }else if(state is TimeFailedToLoadState){
-                        print("ERROR Time "+state.error);
-                        return Center(child: Text(state.error));
-                      }
-                  return Center(child: CircularProgressIndicator());
-                }
-              ),
+              BlocConsumer<TimeBloc, TimeState>(
+                listener: (context, state) {},
+                builder: (context, state){
+                  print(state);
+                  if(state is TimeLoadedState){
+                    return Padding(
+                      padding: const EdgeInsets.all(17.0),
+                      child: Text(
+                        state.time,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 45.0,
+                        ),
+                      ),
+                    );
+                    }else if(state is TimeFailedToLoadState){
+                      print("ERROR Time "+state.error);
+                      return Center(child: Text(state.error));
+                    }
+                return Center(child: CircularProgressIndicator());
+              }
+            ),
               SizedBox(height: 220),
               BlocBuilder<QuotesBloc, QuotesState>(
                   builder: (context, state){
@@ -162,8 +165,9 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+      ),
           
-        ),
-      );
+          
+        );
   }
 }
