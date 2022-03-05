@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:backdrop/backdrop.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:practica1/user_page/bloc/blocImages/Images_bloc.dart';
 
 import 'bloc/blocQuotes/quotes_bloc.dart';
 import 'bloc/blocTime/Time_bloc.dart';
@@ -25,11 +26,7 @@ class _HomePageState extends State<HomePage> {
   
   @override
   Widget build(BuildContext context) {
-    //final urlImage = 'https://i.redd.it/d3j78k2wgjj11.png';
-    
     final urlImage = 'https://picsum.photos/200/300';
-
-
     return MaterialApp(
       title: 'La frase diaria',
       home: BackdropScaffold(
