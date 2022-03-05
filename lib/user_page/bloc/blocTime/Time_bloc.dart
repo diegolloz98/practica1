@@ -13,20 +13,21 @@ final continent = ["Europe", "America", "America", "America", "America"];
 final country = ["Andorra", "Mexico_City", "Lima", "Vancouver", "Argentina"];
 
 class TimeBloc extends Bloc <TimeEvent, TimeState>{
+  TimeBloc() : super(TimeInitial()) {
+    on<TimeEvent>(loadTime);
+  }
+
   int index = 0;
   final _dataServie = DataService();
-  
-  TimeBloc() : super(TimeLoadingState()){
-    on<TimeEvent>((event, emit) async{
-      if(event is TimeLoadEvent){
-        emit(TimeLoadingState());
-        try{
-          String time = await _dataServie.getTime(continent[index], country[index]);
-          emit(TimeLoadedState(time: time));
-        }catch(e){
-          emit(TimeFailedToLoadState(error: e.toString()));
-        }
-      }
-    });
+
+
+  void loadTime(TimeEvent event, Emitter emit) async{
+    var time = await _dataServie.getTime(continent[index], country[index]);
+    if (time == null) {
+      emit(TimeErrorState(errorMsg: 'Error message'));
+    } else {
+      emit(TimeLoadedState(time: time));
+    }
   }
+
 }

@@ -7,6 +7,13 @@ abstract class TimeState{}
 class TimeInitial extends TimeState{
 
 }
+class TimeErrorState extends TimeState {
+  final String errorMsg;
+
+  TimeErrorState({required this.errorMsg});
+  @override
+  List<String?> get props => [errorMsg];
+}
 
 class TimeLoadingState extends TimeState{}
 
